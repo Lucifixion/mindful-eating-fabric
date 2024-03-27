@@ -1,9 +1,9 @@
 package com.minecraftabnormals.mindful_eating.client;
 
+import com.illusivesoulworks.diet.api.type.IDietGroup;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import top.theillusivec4.diet.api.IDietGroup;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 public enum FoodGroups {

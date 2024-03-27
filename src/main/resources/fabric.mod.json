@@ -1,0 +1,39 @@
+{
+	"schemaVersion": 1,
+	"id": "mindful_eating",
+	"version": "${version}",
+	"name": "Mindful Eating - Fabric",
+	"description": "A mod that extends Diet. It rebalances food stats and gives subtle perks for different food groups.",
+	"authors": [
+		"GoopSwagger",
+		"Cameron",
+		"Rye",
+		"Gegy"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "LGPL",
+	"icon": "assets/mindful_eating/icon.png",
+	"environment": "*",
+	"accessWidener": "mindful_eating.accesswidener",
+	"entrypoints": {
+		"main": [
+			"com.minecraftabnormals.mindful_eating.core.MindfulEatingFabric"
+		]
+	},
+	"mixins": [
+		"mindful_eating.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.7",
+		"minecraft": "~1.20.1",
+		"diet": "2.1.1+1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

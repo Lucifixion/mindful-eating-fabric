@@ -3,12 +3,13 @@
   "package": "com.minecraftabnormals.mindful_eating.core.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
-  "refmap": "mindful_eating.refmap.json",
   "mixins": [
     "BlockMixin",
+    "CakeBlockMixin",
     "ItemMixin",
     "LivingEntityMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "farmersdelight.PieBlockMixin"
   ],
   "client": [
     "GuiMixin"

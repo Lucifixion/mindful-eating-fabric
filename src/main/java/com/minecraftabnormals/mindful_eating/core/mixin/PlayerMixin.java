@@ -1,8 +1,13 @@
 package com.minecraftabnormals.mindful_eating.core.mixin;
 
+import com.illusivesoulworks.diet.api.DietApi;
+import com.illusivesoulworks.diet.api.type.IDietGroup;
+import com.illusivesoulworks.diet.common.DietApiImpl;
 import com.minecraftabnormals.mindful_eating.core.ExhaustionSource;
+import com.minecraftabnormals.mindful_eating.core.MindfulEatingFabric;
 import com.minecraftabnormals.mindful_eating.core.ext.MindfulEatingPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -15,6 +20,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,8 +30,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.minecraftabnormals.mindful_eating.core.registry.other.MEEvents.exhaustionReductionLongSheen;
-import static com.minecraftabnormals.mindful_eating.core.registry.other.MEEvents.exhaustionReductionShortSheen;
+import java.util.List;
+import java.util.Set;
+
+import static com.minecraftabnormals.mindful_eating.core.registry.other.MEEvents.*;
 import static java.lang.Math.max;
 
 @Mixin(Player.class)
@@ -35,9 +43,15 @@ public abstract class PlayerMixin extends LivingEntity implements MindfulEatingP
         super(entityType, level);
     }
 
-    @Unique private static final EntityDataAccessor<String> LAST_FOOD_ID = SynchedEntityData.defineId(Player.class, EntityDataSerializers.STRING); //TrackedData.Builder.create(DataProcessors.RESOURCE_LOCATION, () -> new ResourceLocation("cooked_beef")).enableSaving().build();
-    @Unique private static final EntityDataAccessor<Integer> SHEEN_COOLDOWN_ID = SynchedEntityData.defineId(Player.class, EntityDataSerializers.INT); //TrackedData.Builder.create(DataProcessors.INT, () -> 0).enableSaving().build();
-    @Unique private static final EntityDataAccessor<Boolean> HURT_OR_HEAL_ID = SynchedEntityData.defineId(Player.class, EntityDataSerializers.BOOLEAN); //TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enableSaving().build();
+    @Unique private static final EntityDataAccessor<String> LAST_FOOD_ID; //TrackedData.Builder.create(DataProcessors.RESOURCE_LOCATION, () -> new ResourceLocation("cooked_beef")).enableSaving().build();
+    @Unique private static final EntityDataAccessor<Integer> SHEEN_COOLDOWN_ID; //TrackedData.Builder.create(DataProcessors.INT, () -> 0).enableSaving().build();
+    @Unique private static final EntityDataAccessor<Boolean> HURT_OR_HEAL_ID; //TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enableSaving().build();
+
+    static {
+        LAST_FOOD_ID = SynchedEntityData.defineId(Player.class, EntityDataSerializers.STRING);
+        SHEEN_COOLDOWN_ID = SynchedEntityData.defineId(Player.class, EntityDataSerializers.INT);
+        HURT_OR_HEAL_ID = SynchedEntityData.defineId(Player.class, EntityDataSerializers.BOOLEAN);
+    }
 
     public ResourceLocation mindful_eating$getLastFood() {
         return ResourceLocation.tryParse(this.entityData.get(LAST_FOOD_ID));
@@ -133,6 +147,26 @@ public abstract class PlayerMixin extends LivingEntity implements MindfulEatingP
         this.entityData.define(LAST_FOOD_ID, BuiltInRegistries.ITEM.getKey(Items.COOKED_BEEF).toString());
         this.entityData.define(SHEEN_COOLDOWN_ID, 0);
         this.entityData.define(HURT_OR_HEAL_ID, false);
+    }
+
+    @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
+    protected void addAdditionalSaveData(CompoundTag compoundTag, CallbackInfo ci) {
+        compoundTag.putBoolean("HurtOrHeal", mindful_eating$getHurtOrHeal());
+        compoundTag.putString("LastFoodEaten", mindful_eating$getLastFood().toString());
+        compoundTag.putInt("SheenCooldown", mindful_eating$getSheenCooldown());
+    }
+
+    @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
+    protected void readAdditionalSaveData(CompoundTag compoundTag, CallbackInfo ci) {
+        Player player = (((Player) (Object) this));
+        ResourceLocation lastFood = new ResourceLocation(compoundTag.getString("LastFoodEaten"));
+        if (MindfulEatingFabric.DIET_API.getGroups(player, new ItemStack(BuiltInRegistries.ITEM.get(lastFood))).isEmpty()) {
+            lastFood = BuiltInRegistries.ITEM.getKey(Items.COOKED_BEEF);
+        }
+
+        mindful_eating$setHurtOrHeal(compoundTag.getBoolean("HurtOrHeal"));
+        mindful_eating$setLastFood(lastFood);
+        mindful_eating$setSheenCooldown(compoundTag.getInt("SheenCooldown"));
     }
 }
 

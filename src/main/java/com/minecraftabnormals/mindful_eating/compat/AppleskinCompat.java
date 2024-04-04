@@ -1,7 +1,15 @@
 package com.minecraftabnormals.mindful_eating.compat;
 
-import squeek.appleskin.ModConfig;
+import squeek.appleskin.api.event.HUDOverlayEvent;
 
 public class AppleskinCompat {
-    public static boolean SHOW_SATURATION_OVERLAY = ModConfig.INSTANCE.showSaturationHudOverlay;
+    public static void init() {
+        HUDOverlayEvent.Saturation.EVENT.register(saturation ->
+                saturation.isCanceled = true
+        );
+
+        HUDOverlayEvent.HungerRestored.EVENT.register(hungerRestored ->
+                hungerRestored.isCanceled = true
+        );
+    }
 }

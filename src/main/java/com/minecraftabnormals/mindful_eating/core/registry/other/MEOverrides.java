@@ -57,22 +57,26 @@ public class MEOverrides {
     }
 
     public static void changeHunger(Item item, int hunger) {
-        item.getFoodProperties().nutrition = hunger;
+        if (item.getFoodProperties() != null)
+            item.getFoodProperties().nutrition = hunger;
         // System.out.println("Changed hunger of " + item + " to " + hunger);
     }
 
     public static void changeSaturation(Item item, float saturation) {
-        item.getFoodProperties().saturationModifier = saturation;
+        if (item.getFoodProperties() != null)
+            item.getFoodProperties().saturationModifier = saturation;
         // System.out.println("Changed saturation of " + item + " to " + saturation);
     }
 
     public static void changeFastEating(Item item, boolean fast) {
-        item.getFoodProperties().fastFood = fast;
+        if (item.getFoodProperties() != null)
+            item.getFoodProperties().fastFood = fast;
         // System.out.println("Changed fastEating of " + item + " to " + fast);
     }
 
     public static void changeCanEatWhenFull(Item item, boolean gorgable) {
-        item.getFoodProperties().canAlwaysEat = gorgable;
+        if (item.getFoodProperties() != null)
+            item.getFoodProperties().canAlwaysEat = gorgable;
         // System.out.println("Changed canEatWhenFull of " + item + " to " + gorgable);
     }
 

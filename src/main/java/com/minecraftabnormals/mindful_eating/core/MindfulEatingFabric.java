@@ -3,6 +3,9 @@ package com.minecraftabnormals.mindful_eating.core;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.illusivesoulworks.diet.api.DietEvents;
+import com.illusivesoulworks.diet.common.DietApiImpl;
+import com.minecraftabnormals.mindful_eating.compat.AppleskinCompat;
 import com.minecraftabnormals.mindful_eating.core.registry.other.MEOverrides;
 import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
@@ -32,22 +35,19 @@ public class MindfulEatingFabric implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("Mindful Eating");
 
 	public static HashMap<String, Integer> ORIGINAL_ITEMS = new HashMap<>();
-
 	public static HashMap<String, FoodProperties> ORIGINAL_FOODS = new HashMap<>();
+
+	public static final DietApiImpl DIET_API = new DietApiImpl();
 
 	@Override
 	public void onInitialize() {
 		ForgeConfigRegistry.INSTANCE.register(MOD_ID, ModConfig.Type.COMMON, MEConfig.SPEC);
 
 		if (FabricLoader.getInstance().isModLoaded("appleskin")) {
-			HUDOverlayEvent.Saturation.EVENT.register(saturation ->
-					saturation.isCanceled = true
-			);
-
-			HUDOverlayEvent.HungerRestored.EVENT.register(hungerRestored ->
-					hungerRestored.isCanceled = true
-			);
+			AppleskinCompat.init();
 		}
+
+		DietEvents.APPLY_EFFECT.register(listener -> MEConfig.COMMON.nativeDietBuffs.get());
 
 		ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override
@@ -74,10 +74,10 @@ public class MindfulEatingFabric implements ModInitializer {
 						MEOverrides.changeCanEatWhenFull(item, entry.getValue().canAlwaysEat());
 					}
 
-					ResourceLocation path = new ResourceLocation(MindfulEatingFabric.MOD_ID, "food_changes.json");
+					ResourceLocation path = getFabricId();
 					resourceManager.getResource(path).ifPresent(resource -> {
 						try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.open()))) {
-							JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
+							JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
 
 							String[] names = {"hunger", "saturation", "speedy", "stackability", "gorgable"};
 

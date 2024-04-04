@@ -31,7 +31,7 @@ public class MEConfig {
             exhaustionReduction = builder.comment("The amount exhaustion is reduced by (if the above config is false). Default: 0.75").define("Exhaustion Reduction", 0.75);
 
             builder.pop();
-            builder.comment("For multiple food groups, separate groups with a /, for example: fruits/vegetables.").push("exhaustion sources");
+            builder.comment("For multiple food groups, separate groups with a /, for example: fruits/vegetables.").push("exhaustion-sources");
 
             foodGroupExhaustion = new ForgeConfigSpec.ConfigValue[8];
             String[] defaultFoodGroup = {"fruits", "vegetables", "vegetables", "grains", "proteins", "proteins", "sugars", "sugars"};

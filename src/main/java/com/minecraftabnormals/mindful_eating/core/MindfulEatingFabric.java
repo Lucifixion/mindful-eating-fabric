@@ -57,7 +57,7 @@ public class MindfulEatingFabric implements ModInitializer {
 
 			@Override
 			public void onResourceManagerReload(ResourceManager resourceManager) {
-				CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+				CompletableFuture.runAsync(() -> {
 
 					// reload original values for food, so if changes are removed they leave no trace
 

@@ -30,6 +30,7 @@
 		"fabricloader": ">=0.15.7",
 		"minecraft": "~1.20.1",
 		"diet": "2.1.1+1.20.1",
+		"forgeconfigapiport": "*",
 		"java": ">=17",
 		"fabric-api": "*"
 	},

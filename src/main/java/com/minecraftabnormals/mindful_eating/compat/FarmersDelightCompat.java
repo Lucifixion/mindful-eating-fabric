@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CakeBlock;
 
 import java.util.Set;
 
@@ -27,6 +28,16 @@ public class FarmersDelightCompat {
 
     public static void resetNourishedHungerOverlay() {
         NOURISHED_HUNGER_OVERLAY = TEMPORARY_NOURISHED_HUNGER_OVERLAY;
+    }
+
+    public static void cakeEatenCheck(Block block, Player player, ItemStack heldItem) {
+        if (block instanceof CakeBlock) {
+            Set<IDietGroup> groups = MindfulEatingFabric.DIET_API.getGroups(player, new ItemStack(block));
+            if (player.getFoodData().needsFood() && !groups.isEmpty() && !heldItem.is(TagsRegistry.KNIVES)) {
+                ResourceLocation currentFood = BuiltInRegistries.ITEM.getKey(block.asItem());
+                ((MindfulEatingPlayer) player).mindful_eating$setLastFood(currentFood);
+            }
+        }
     }
 
     public static void pieEatenCheck(Block block, Player player, ItemStack heldItem) {

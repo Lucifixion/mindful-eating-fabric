@@ -1,7 +1,6 @@
 package com.minecraftabnormals.mindful_eating.client;
 
 import com.illusivesoulworks.diet.api.type.IDietGroup;
-import com.minecraftabnormals.mindful_eating.compat.AppleskinCompat;
 import com.minecraftabnormals.mindful_eating.compat.FarmersDelightCompat;
 import com.minecraftabnormals.mindful_eating.core.MindfulEatingFabric;
 import com.minecraftabnormals.mindful_eating.core.ext.MindfulEatingPlayer;
@@ -27,8 +26,7 @@ public class HungerOverlay {
     private static final Minecraft minecraft = Minecraft.getInstance();
 
     private static final Random random = new Random();
-    public static int foodIconOffset;
-//
+
 //    @SubscribeEvent(priority = EventPriority.LOWEST)
 //    public static void hungerIconOverride(RenderGameOverlayEvent.PreLayer event) {
 //        if (event.getOverlay() == ForgeIngameGui.FOOD_LEVEL_ELEMENT && ModList.get().isLoaded("farmersdelight")) {
@@ -120,7 +118,6 @@ public class HungerOverlay {
                     return;
                 float effectiveSaturationOfBar = (modifiedSaturation / 2.0F) - i;
 
-                int v = group;
                 int u;
 
                 if (effectiveSaturationOfBar >= 1)
@@ -134,7 +131,7 @@ public class HungerOverlay {
                 else
                     u = 0;
 
-                guiGraphics.blit(GUI_SATURATION_ICONS_LOCATION, x, y, u, v, 9, 9, 126, 45);
+                guiGraphics.blit(GUI_SATURATION_ICONS_LOCATION, x, y, u, group, 9, 9, 126, 45);
             }
         }
         minecraft.getProfiler().pop();

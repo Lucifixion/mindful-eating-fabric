@@ -54,7 +54,12 @@ public abstract class PlayerMixin extends LivingEntity implements MindfulEatingP
     }
 
     public ResourceLocation mindful_eating$getLastFood() {
-        return ResourceLocation.tryParse(this.entityData.get(LAST_FOOD_ID));
+        ResourceLocation resourceLocation = ResourceLocation.tryParse(this.entityData.get(LAST_FOOD_ID));
+        if (resourceLocation == null) {
+            resourceLocation = BuiltInRegistries.ITEM.getKey(Items.COOKED_BEEF);
+            mindful_eating$setLastFood(resourceLocation);
+        }
+        return resourceLocation;
     }
 
     public void mindful_eating$setLastFood(ResourceLocation lastFood) {

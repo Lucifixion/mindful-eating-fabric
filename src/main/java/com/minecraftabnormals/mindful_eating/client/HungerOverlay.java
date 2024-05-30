@@ -84,7 +84,12 @@ public class HungerOverlay {
                 y-=2;
             int icon = 0;
 
-            FoodGroups foodGroup = FoodGroups.byDietGroup(groups[i % groups.length]);
+            FoodGroups foodGroup;
+            if (groups.length == 0)
+                foodGroup = FoodGroups.PROTEINS;
+            else
+                foodGroup = FoodGroups.byDietGroup(groups[i % groups.length]);
+
             int group = foodGroup != null ? foodGroup.getTextureOffset() : 0;
             byte background = 0;
 

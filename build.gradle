@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version '1.10.5'
 	id 'maven-publish'
 }
 
@@ -37,6 +37,15 @@ repositories {
 	maven { url = "https://maven.wispforest.io/" }
 	maven { url = "https://maven.terraformersmc.com/" }
 	maven { url = "https://maven.blamejared.com/" }
+	maven { url = "https://mvn.devos.one/snapshots/" } // Registrate, Porting Lib, Forge Tags, Milk Lib
+    maven { url = "https://mvn.devos.one/releases/" }
+    maven { // for Porting Lib: Fabric ASM
+        url = "https://jitpack.io/"
+	}
+	maven { // Reach Entity Attributes
+        url = "https://maven.jamieswhiteshirt.com/libs-release"
+        content { includeGroup("com.jamieswhiteshirt") }
+    }
 }
 
 dependencies {
@@ -55,7 +64,7 @@ dependencies {
 	modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forge_config_api}"
 	modImplementation "curse.maven:diet-443570:4813902"
 	modImplementation group: 'com.illusivesoulworks.spectrelib', name: 'spectrelib-fabric', version: "${spectrelib_range}"
-	modImplementation "maven.modrinth:farmers-delight-fabric:${project.delight_version}"
+	modImplementation "maven.modrinth:farmers-delight-refabricated:${project.delight_version}"
 	modCompileOnly("squeek.appleskin:appleskin-fabric:${appleskin_version}:api") {
 		transitive = false
 	}
@@ -64,6 +73,14 @@ dependencies {
 	}
 	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cca_version}"
 	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}"
+
+    include(modImplementation("com.github.Chocohead:Fabric-ASM:${fabric_asm_version}")) {
+        exclude (group: "net.fabricmc.fabric-api")
+    }
+
+    for (String module in port_lib_modules.split(",")) {
+        include(modApi("io.github.fabricators_of_create.Porting-Lib:$module:$port_lib_version"))
+    }
 }
 
 loom {

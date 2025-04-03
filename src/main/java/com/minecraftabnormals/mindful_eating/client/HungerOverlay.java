@@ -2,6 +2,7 @@ package com.minecraftabnormals.mindful_eating.client;
 
 import com.illusivesoulworks.diet.api.type.IDietGroup;
 import com.minecraftabnormals.mindful_eating.compat.FarmersDelightCompat;
+import com.minecraftabnormals.mindful_eating.core.MEConfig;
 import com.minecraftabnormals.mindful_eating.core.MindfulEatingFabric;
 import com.minecraftabnormals.mindful_eating.core.ext.MindfulEatingPlayer;
 import com.nhoryzon.mc.farmersdelight.registry.EffectsRegistry;
@@ -100,8 +101,7 @@ public class HungerOverlay {
 
             if (FabricLoader.getInstance().isModLoaded("farmersdelight")
                     && player.hasEffect(EffectsRegistry.NOURISHMENT.get())
-                    && FarmersDelightCompat.NOURISHED_HUNGER_OVERLAY) {
-                FarmersDelightCompat.setNourishedHungerOverlay(false);
+                    && MEConfig.COMMON.nourishmentOverlay.get()) {
                 texture = GUI_NOURISHMENT_ICONS_LOCATION;
                 icon -= player.hasEffect(MobEffects.HUNGER) ? 45 : 27;
                 background = 0;

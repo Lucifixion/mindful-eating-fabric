@@ -12,23 +12,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CakeBlock;
+import vectorwing.farmersdelight.common.Configuration;
 
 import java.util.Set;
 
 public class FarmersDelightCompat {
 
-    public static boolean ENABLE_STACKABLE_SOUP_ITEMS = FarmersDelightMod.CONFIG.isEnableStackableSoupSize();
-    public static boolean NOURISHED_HUNGER_OVERLAY = FarmersDelightMod.CONFIG.isNourishedHungerOverlay();
-
-    public static boolean TEMPORARY_NOURISHED_HUNGER_OVERLAY = NOURISHED_HUNGER_OVERLAY;
-    public static void setNourishedHungerOverlay(boolean flag) {
-        TEMPORARY_NOURISHED_HUNGER_OVERLAY = NOURISHED_HUNGER_OVERLAY;
-        FarmersDelightMod.CONFIG.setNourishedHungerOverlay(flag);
-    }
-
-    public static void resetNourishedHungerOverlay() {
-        NOURISHED_HUNGER_OVERLAY = TEMPORARY_NOURISHED_HUNGER_OVERLAY;
-    }
+    public static boolean ENABLE_STACKABLE_SOUP_ITEMS = Configuration.ENABLE_STACKABLE_SOUP_ITEMS.get();
 
     public static void cakeEatenCheck(Block block, Player player, ItemStack heldItem) {
         if (block instanceof CakeBlock) {

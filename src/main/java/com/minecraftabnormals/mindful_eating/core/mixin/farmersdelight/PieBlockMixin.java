@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Pseudo
-@Mixin(com.nhoryzon.mc.farmersdelight.block.PieBlock.class)
+@Mixin(vectorwing.farmersdelight.common.block.PieBlock.class)
 public class PieBlockMixin {
 
     @Inject(method = "use", at = @At(value = "HEAD"))

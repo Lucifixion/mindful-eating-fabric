@@ -1,11 +1,9 @@
 package com.minecraftabnormals.mindful_eating.client;
 
 import com.illusivesoulworks.diet.api.type.IDietGroup;
-import com.minecraftabnormals.mindful_eating.compat.FarmersDelightCompat;
 import com.minecraftabnormals.mindful_eating.core.MEConfig;
 import com.minecraftabnormals.mindful_eating.core.MindfulEatingFabric;
 import com.minecraftabnormals.mindful_eating.core.ext.MindfulEatingPlayer;
-import com.nhoryzon.mc.farmersdelight.registry.EffectsRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,6 +13,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import squeek.appleskin.ModConfig;
+import vectorwing.farmersdelight.common.registry.ModEffects;
 
 import java.util.Random;
 
@@ -100,7 +99,7 @@ public class HungerOverlay {
             }
 
             if (FabricLoader.getInstance().isModLoaded("farmersdelight")
-                    && player.hasEffect(EffectsRegistry.NOURISHMENT.get())
+                    && player.hasEffect(ModEffects.NOURISHMENT.get())
                     && MEConfig.COMMON.nourishmentOverlay.get()) {
                 texture = GUI_NOURISHMENT_ICONS_LOCATION;
                 icon -= player.hasEffect(MobEffects.HUNGER) ? 45 : 27;

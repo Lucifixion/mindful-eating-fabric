@@ -16,9 +16,6 @@ public class AppleskinCompat {
         if (INSTANCE == null) {
             INSTANCE = new AppleskinCompat();
         }
-        HUDOverlayEvent.Saturation.EVENT.register(saturation ->
-                saturation.isCanceled = true
-        );
     }
 
     public AppleskinPreview getCurrentPreview() {
@@ -34,5 +31,11 @@ public class AppleskinCompat {
         currentPreview.alpha = alpha;
         currentPreview.hungerLevel = Math.max(0, Math.min(20, foodLevel + hungerRestored));
         currentPreview.useRotten = useRotten;
+    }
+
+    public void updateSaturationPreview(float saturationRestored, float saturationLevel, Minecraft mc, int right, int top, float alpha) {
+        currentPreview.isActive = true;
+        currentPreview.alpha = alpha;
+        currentPreview.saturationLevel = Math.min(20.0F, saturationLevel + saturationRestored);
     }
 }

@@ -34,4 +34,20 @@ public class HUDOverlayHandlerMixin {
             AppleskinCompat.INSTANCE.updateHungerPreview(hunger, event.currentFoodLevel, mc, event.x, event.y, alpha, useRottenTextures);
         }
     }
+
+    @Redirect(
+            method = "onRender(Lnet/minecraft/client/gui/GuiGraphics;)V",
+            at = @At(value = "INVOKE", target = "Lsqueek/appleskin/client/HUDOverlayHandler;drawSaturationOverlay(Lsqueek/appleskin/api/event/HUDOverlayEvent$Saturation;Lnet/minecraft/client/Minecraft;FF)V", ordinal = 0)
+    )
+    private static void drawSaturationOverlay0(HUDOverlayHandler handler, HUDOverlayEvent.Saturation event, Minecraft mc, float saturationGained, float alpha) {}
+
+    @Redirect(
+            method = "onRender(Lnet/minecraft/client/gui/GuiGraphics;)V",
+            at = @At(value = "INVOKE", target = "Lsqueek/appleskin/client/HUDOverlayHandler;drawSaturationOverlay(Lsqueek/appleskin/api/event/HUDOverlayEvent$Saturation;Lnet/minecraft/client/Minecraft;FF)V", ordinal = 1)
+    )
+    private static void drawSaturationOverlay1(HUDOverlayHandler handler, HUDOverlayEvent.Saturation event, Minecraft mc, float saturationGained, float alpha) {
+        if (AppleskinCompat.INSTANCE != null) {
+            AppleskinCompat.INSTANCE.updateSaturationPreview(saturationGained, event.saturationLevel, mc, event.x, event.y, alpha);
+        }
+    }
 }

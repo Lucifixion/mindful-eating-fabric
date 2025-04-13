@@ -80,11 +80,14 @@ public class HungerOverlay {
         int level = stats.getFoodLevel();
         int ticks = minecraft.gui.getGuiTicks();
         float modifiedSaturation = Math.min(stats.getSaturationLevel(), 20);
+        float previewSaturation;
         AppleskinPreview preview;
         if (AppleskinCompat.INSTANCE != null) {
             preview = AppleskinCompat.INSTANCE.getCurrentPreview();
+            previewSaturation = Math.min(preview.saturationLevel, 20);
         } else {
             preview = new AppleskinPreview();
+            previewSaturation = modifiedSaturation;
         }
 
         int yOffset = player.tickCount % Mth.ceil(10 + 5.0F);
@@ -144,7 +147,7 @@ public class HungerOverlay {
                 guiGraphics.blit(texture, x, y, icon + 45, group, 9, 9, 126, 45);
             }
 
-            if (preview.isActive && idx >= level && idx <= preview.hungerLevel) {
+            if (preview.isActive && idx >= level && idx <= preview.hungerLevel && preview.alpha > 0.0F) {
                 int preview_level = preview.hungerLevel;
 
                 // very faint background
@@ -161,7 +164,7 @@ public class HungerOverlay {
 
             if (FabricLoader.getInstance().isModLoaded("appleskin")) {
                 if (!ModConfig.INSTANCE.showSaturationHudOverlay)
-                    return;
+                    continue;
                 float effectiveSaturationOfBar = (modifiedSaturation / 2.0F) - i;
 
                 int u;
@@ -178,6 +181,27 @@ public class HungerOverlay {
                     u = 0;
 
                 guiGraphics.blit(GUI_SATURATION_ICONS_LOCATION, x, y, u, group, 9, 9, 126, 45);
+
+                if (preview.isActive && previewSaturation > modifiedSaturation && previewSaturation / 2.0F > i && modifiedSaturation / 2.0F < i + 1 && preview.alpha > 0.0F) {
+                    float effectiveSaturationOfPreviewBar = (previewSaturation / 2.0F) - i;
+
+                    int u2;
+
+                    if (effectiveSaturationOfPreviewBar >= 1)
+                        u2 = 4 * 9;
+                    else if (effectiveSaturationOfPreviewBar > .75)
+                        u2 = 3 * 9;
+                    else if (effectiveSaturationOfPreviewBar > .5)
+                        u2 = 2 * 9;
+                    else if (effectiveSaturationOfPreviewBar > .25)
+                        u2 = 9;
+                    else
+                        u2 = 0;
+
+                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, preview.alpha);
+                    guiGraphics.blit(GUI_SATURATION_ICONS_LOCATION, x, y, u2, group, 9, 9, 126, 45);
+                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                }
             }
         }
         if (preview.isActive) disableAlpha();

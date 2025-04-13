@@ -1,9 +1,13 @@
 package com.minecraftabnormals.mindful_eating.client;
 
 import com.illusivesoulworks.diet.api.type.IDietGroup;
+import com.minecraftabnormals.mindful_eating.compat.AppleskinCompat;
+import com.minecraftabnormals.mindful_eating.compat.AppleskinPreview;
 import com.minecraftabnormals.mindful_eating.core.MEConfig;
 import com.minecraftabnormals.mindful_eating.core.MindfulEatingFabric;
 import com.minecraftabnormals.mindful_eating.core.ext.MindfulEatingPlayer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import org.lwjgl.opengl.GL11;
 import squeek.appleskin.ModConfig;
 import vectorwing.farmersdelight.common.registry.ModEffects;
 
@@ -26,6 +31,8 @@ public class HungerOverlay {
     private static final Minecraft minecraft = Minecraft.getInstance();
 
     private static final Random random = new Random();
+
+    public static boolean savedBlend = false;
 
 //    @SubscribeEvent(priority = EventPriority.LOWEST)
 //    public static void hungerIconOverride(RenderGameOverlayEvent.PreLayer event) {
@@ -73,8 +80,19 @@ public class HungerOverlay {
         int level = stats.getFoodLevel();
         int ticks = minecraft.gui.getGuiTicks();
         float modifiedSaturation = Math.min(stats.getSaturationLevel(), 20);
+        AppleskinPreview preview;
+        if (AppleskinCompat.INSTANCE != null) {
+            preview = AppleskinCompat.INSTANCE.getCurrentPreview();
+        } else {
+            preview = new AppleskinPreview();
+        }
 
         int yOffset = player.tickCount % Mth.ceil(10 + 5.0F);
+
+        if (preview.isActive) {
+            enableAlpha();
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0f);
+        }
 
         for (int i = 0; i < 10; ++i) {
             int idx = i * 2 + 1;
@@ -92,10 +110,17 @@ public class HungerOverlay {
 
             int group = foodGroup != null ? foodGroup.getTextureOffset() : 0;
             byte background = 0;
+            int preview_icon = 0;
+            byte preview_background = 1;
 
             if (player.hasEffect(MobEffects.HUNGER)) {
                 icon += 36;
                 background = 13;
+            }
+
+            if (preview.useRotten) {
+                preview_icon += 36;
+                preview_background = 13;
             }
 
             if (FabricLoader.getInstance().isModLoaded("farmersdelight")
@@ -104,6 +129,8 @@ public class HungerOverlay {
                 texture = GUI_NOURISHMENT_ICONS_LOCATION;
                 icon -= player.hasEffect(MobEffects.HUNGER) ? 45 : 27;
                 background = 0;
+                preview_icon -= preview.useRotten ? 45 : 27;
+                preview_background = 0;
             }
 
             if (player.getFoodData().getSaturationLevel() <= 0.0F && ticks % (level * 3 + 1) == 0) {
@@ -115,6 +142,21 @@ public class HungerOverlay {
                 guiGraphics.blit(texture, x, y, icon + 36, group, 9, 9, 126, 45);
             } else if (idx == level) {
                 guiGraphics.blit(texture, x, y, icon + 45, group, 9, 9, 126, 45);
+            }
+
+            if (preview.isActive && idx >= level && idx <= preview.hungerLevel) {
+                int preview_level = preview.hungerLevel;
+
+                // very faint background
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, preview.alpha * 0.25F);
+                guiGraphics.blit(texture, x, y, preview_background * 9, group, 9, 9, 126, 45);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, preview.alpha);
+                if (idx < preview_level) {
+                    guiGraphics.blit(texture, x, y, preview_icon + 36, group, 9, 9, 126, 45);
+                } else {
+                    guiGraphics.blit(texture, x, y, preview_icon + 45, group, 9, 9, 126, 45);
+                }
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
             if (FabricLoader.getInstance().isModLoaded("appleskin")) {
@@ -138,6 +180,21 @@ public class HungerOverlay {
                 guiGraphics.blit(GUI_SATURATION_ICONS_LOCATION, x, y, u, group, 9, 9, 126, 45);
             }
         }
+        if (preview.isActive) disableAlpha();
         minecraft.getProfiler().pop();
     }
+
+    private static void enableAlpha()
+	{
+		savedBlend = GL11.glIsEnabled(GL11.GL_BLEND);
+		RenderSystem.enableBlend();
+		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+	}
+
+	private static void disableAlpha()
+	{
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		if (!savedBlend)
+			RenderSystem.disableBlend();
+	}
 }

@@ -12,6 +12,9 @@
     "farmersdelight.PieBlockMixin"
   ],
   "client": [
-    "GuiMixin"
+    "GuiMixin",
+    "appleskin.FoodOverlayMixin",
+    "appleskin.TooltipOverlayHandlerMixin",
+    "appleskin.HUDOverlayHandlerMixin"
   ]
 }

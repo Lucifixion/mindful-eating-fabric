@@ -1,8 +1,10 @@
 package com.minecraftabnormals.mindful_eating.core.mixin.appleskin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.minecraftabnormals.mindful_eating.compat.AppleskinCompat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,9 +31,9 @@ public class HUDOverlayHandlerMixin {
             method = "onRender(Lnet/minecraft/client/gui/GuiGraphics;)V",
             at = @At(value = "INVOKE", target = "Lsqueek/appleskin/client/HUDOverlayHandler;drawHungerOverlay(Lsqueek/appleskin/api/event/HUDOverlayEvent$HungerRestored;Lnet/minecraft/client/Minecraft;IFZ)V", ordinal = 0)
     )
-    private static void drawHungerOverlay(HUDOverlayHandler handler, HUDOverlayEvent.HungerRestored event, Minecraft mc, int hunger, float alpha, boolean useRottenTextures) {
+    private static void drawHungerOverlay(HUDOverlayHandler handler, HUDOverlayEvent.HungerRestored event, Minecraft mc, int hunger, float alpha, boolean useRottenTextures, @Local(name = "heldItem") ItemStack heldItem) {
         if (AppleskinCompat.INSTANCE != null) {
-            AppleskinCompat.INSTANCE.updateHungerPreview(hunger, event.currentFoodLevel, mc, event.x, event.y, alpha, useRottenTextures);
+            AppleskinCompat.INSTANCE.updateHungerPreview(hunger, event.currentFoodLevel, mc, event.x, event.y, alpha, useRottenTextures, heldItem);
         }
     }
 

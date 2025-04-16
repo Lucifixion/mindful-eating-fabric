@@ -12,6 +12,7 @@
     "farmersdelight.PieBlockMixin"
   ],
   "client": [
-    "GuiMixin"
+    "GuiMixin",
+    "farmersdelight.NourishmentHungerOverlayMixin"
   ]
 }

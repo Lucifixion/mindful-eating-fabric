@@ -17,6 +17,7 @@ import java.util.Set;
 
 public class FarmersDelightCompat {
 
+    public static boolean NOURISHED_HUNGER_OVERLAY = Configuration.NOURISHED_HUNGER_OVERLAY.get();
     public static boolean ENABLE_STACKABLE_SOUP_ITEMS = Configuration.ENABLE_STACKABLE_SOUP_ITEMS.get();
 
     public static void cakeEatenCheck(Block block, Player player, ItemStack heldItem) {

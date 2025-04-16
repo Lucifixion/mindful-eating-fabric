@@ -20,7 +20,6 @@ public class MEConfig {
         public final ForgeConfigSpec.ConfigValue<Boolean> proportionalDiet;
         public final ForgeConfigSpec.ConfigValue<Boolean> nativeDietBuffs;
         public final ForgeConfigSpec.ConfigValue<Double> exhaustionReduction;
-        public final ForgeConfigSpec.ConfigValue<Boolean> nourishmentOverlay;
         public final ForgeConfigSpec.ConfigValue<String>[] foodGroupExhaustion;
 
         Common(ForgeConfigSpec.Builder builder) {
@@ -30,7 +29,6 @@ public class MEConfig {
             proportionalDiet = builder.comment("Whether the saturation bonus is dependent on Diet's mechanics. If false, it will instead be based on the last food eaten. Default: false").define("Proportional Diet", false);
             nativeDietBuffs = builder.comment("Whether the buffs added by the Diet mod are enabled. Default: false").define("Native Diet Buffs", false);
             exhaustionReduction = builder.comment("The amount exhaustion is reduced by (if the above config is false). Default: 0.75").define("Exhaustion Reduction", 0.75);
-            nourishmentOverlay = builder.comment("Should the hunger bar have a gilded overlay when the player has the Nourishment effect? Disable the equivalent option in Farmer's Delight. Default: true").define("Nourishment Hunger Overlay", true);
 
             builder.pop();
             builder.comment("For multiple food groups, separate groups with a /, for example: fruits/vegetables.").push("exhaustion-sources");
